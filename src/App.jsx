@@ -1,14 +1,50 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+// --- KOMPONEN HUJAN TETESAN AIR PLASTIK HITAM LEMBUT (OPASITAS 40%) ---
+const FloatingRain = () => {
+  const raindrops = Array.from({ length: 110 }).map((_, i) => ({
+    id: i,
+    width: Math.random() * 3.5 + 2, 
+    height: Math.random() * 30 + 18, 
+    x: Math.random() * 100,
+    delay: Math.random() * 5,
+    duration: Math.random() * 1.2 + 0.9, 
+  }));
+
+  return (
+    <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 45, overflow: 'hidden' }}>
+      {raindrops.map((drop) => (
+        <motion.div
+          key={drop.id}
+          initial={{ opacity: 0, y: -50, x: `${drop.x}vw` }}
+          animate={{ opacity: [0, 0.40, 0.40, 0], y: '100vh' }} // Opasitas dinaikkan menjadi 40%
+          transition={{ duration: drop.duration, delay: drop.delay, ease: 'linear', repeat: Infinity }}
+          style={{
+            position: 'absolute',
+            top: 0,
+            width: `${drop.width}px`,
+            height: `${drop.height}px`,
+            backgroundColor: 'rgba(30, 30, 30, 0.40)', // Warna air di kantong plastik hitam lembut dengan opasitas 40%
+            borderRadius: '50% 50% 50% 50% / 60% 60% 40% 40%',
+            boxShadow: 'inset 0 1px 2px rgba(255, 255, 255, 0.2), 0 1px 3px rgba(0, 0, 0, 0.2)',
+            backdropFilter: 'blur(1px)',
+          }}
+        />
+      ))}
+    </div>
+  );
+};
+
 function App() {
   const [isOpen, setIsOpen] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [showRain, setShowRain] = useState(false);
   const audioRef = useRef(null);
 
   const handleOpenLetter = () => {
-    setIsTransitioning(true); // Animasi daun soft pink & soft green 4.5 detik
+    setIsTransitioning(true); 
     if (audioRef.current) {
       audioRef.current.play().then(() => {
         setIsPlaying(true);
@@ -19,6 +55,7 @@ function App() {
 
     setTimeout(() => {
       setIsOpen(true);
+      setShowRain(true); 
     }, 4500);
   };
 
@@ -31,11 +68,9 @@ function App() {
     setIsPlaying(!isPlaying);
   };
 
-  const raindrops = Array.from({ length: 45 });
   const fallingLeaves = Array.from({ length: 12 });
   const windLeaves = Array.from({ length: 30 });
 
-  // Fungsi helper untuk mendapatkan warna hover random antara soft pink & soft green
   const getRandomHoverColor = () => {
     const colors = ['#ffb5a7', '#86efac', '#fbcfe8', '#bbf7d0', '#f472b6', '#4ade80'];
     return colors[Math.floor(Math.random() * colors.length)];
@@ -44,35 +79,9 @@ function App() {
   return (
     <div className="w-full min-h-screen bg-pink-50 font-quicksand relative overflow-x-hidden">
       
-      {/* ====================================================
-          CSS 60 FPS GPU HARDWARE ACCELERATED & THEME COLORS
-          ==================================================== */}
-      <style>{`
-        @keyframes rainfall {
-          0% { 
-            transform: translate3d(80px, -80px, 0) rotate(35deg); 
-            opacity: 0; 
-          }
-          20% { opacity: 0.7; }
-          80% { opacity: 0.7; }
-          100% { 
-            transform: translate3d(-300px, 110vh, 0) rotate(35deg); 
-            opacity: 0; 
-          }
-        }
-        .rain-drop {
-          position: fixed;
-          background: linear-gradient(to bottom, rgba(255, 200, 150, 0.8), rgba(255, 150, 100, 0.1));
-          width: 2px;
-          height: 25px;
-          border-radius: 50%;
-          pointer-events: none;
-          z-index: 40;
-          animation: rainfall linear infinite;
-          will-change: transform;
-          transform: translate3d(0,0,0);
-        }
+      {showRain && <FloatingRain />}
 
+      <style>{`
         @keyframes fallAndSway {
           0% {
             transform: translate3d(0px, -10vh, 0) rotate(0deg);
@@ -100,7 +109,6 @@ function App() {
           transform: translate3d(0,0,0);
         }
 
-        /* Animasi Daun Soft Pink & Soft Green Tertiup Angin */
         @keyframes windBlow {
           0% {
             transform: translate3d(-50vw, 50vh, 0) rotate(0deg);
@@ -130,7 +138,6 @@ function App() {
           will-change: transform;
         }
 
-        /* Portal Berputar Searah Jarum Jam Warna Soft Pink & Green */
         @keyframes rotateClockwise {
           0% { transform: rotate(0deg); }
           100% { transform: rotate(360deg); }
@@ -173,16 +180,12 @@ function App() {
         }
       `}</style>
 
-      {/* AUDIO ELEMENT */}
       <audio 
         ref={audioRef}
         loop 
         src="https://raw.githubusercontent.com/prasetiyo08/anniversary_pict/main/music/Joshua%20Radin%20-%20My%20My%20Love.mp3" 
       />
 
-      {/* ====================================================
-          HALAMAN PEMBUKA & PORTAL SOFT PINK & GREEN
-          ==================================================== */}
       <AnimatePresence>
         {!isOpen && (
           <motion.div 
@@ -310,10 +313,6 @@ function App() {
         )}
       </AnimatePresence>
 
-
-      {/* ====================================================
-          KONTEN UTAMA WEB (DENGAN INTERAKSI HOVER TIMBUL & WARNA RANDOM HALUS)
-          ==================================================== */}
       {isOpen && (
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
@@ -321,30 +320,10 @@ function App() {
           transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
           className="w-full min-h-screen relative"
         >
-          {raindrops.map((_, i) => {
-            const randomLeft = (i * 15) % 160 - 20; 
-            const randomDuration = 1.0 + (i % 3) * 0.3; 
-            const randomDelay = (i * 0.1);
-
-            return (
-              <div
-                key={i}
-                className="rain-drop"
-                style={{
-                  left: `${randomLeft}%`,
-                  top: '-50px',
-                  animationDuration: `${randomDuration}s`,
-                  animationDelay: `${randomDelay}s`,
-                }}
-              />
-            );
-          })}
-
           <div className="w-full min-h-screen smart-bg z-10 flex flex-col justify-start items-center py-20 px-4 md:px-8 relative">
 
             <div className="w-full max-w-[1300px] flex flex-col lg:flex-row gap-8 lg:gap-4 relative z-20 items-center justify-between">
               
-              {/* KOLOM KIRI (FOTO A & STICKY NOTE) - DENGAN HOVER TIMBUL & WARNA RANDOM */}
               <div className="w-full lg:w-[28%] flex flex-col items-center gap-4 order-2 lg:order-1">
                 <motion.div 
                   whileHover={{ scale: 1.05, y: -6, rotate: 0 }}
@@ -380,7 +359,6 @@ function App() {
                 </div>
               </div>
 
-              {/* KOLOM TENGAH (TEKS UTAMA & KOTAK UCAPAN) - DENGAN HOVER TIMBUL & WARNA RANDOM */}
               <div className="w-full lg:w-[42%] flex flex-col items-center justify-center text-center order-1 lg:order-2 px-2">
                 <motion.h1 
                   whileHover={{ scale: 1.03, y: -3 }}
@@ -432,7 +410,6 @@ function App() {
                 </motion.div>
               </div>
 
-              {/* KOLOM KANAN (FOTO B & C SERTA CHECKLIST) - DENGAN HOVER TIMBUL & WARNA RANDOM */}
               <div className="w-full lg:w-[28%] flex flex-col items-center gap-4 order-3 lg:order-3 mb-10 lg:mb-0">
                 <motion.p 
                   whileHover={{ scale: 1.04, y: -2 }}
@@ -500,7 +477,6 @@ function App() {
             </div>
           </div>
 
-          {/* WIDGET MUSIK INTERAKTIF (Z-50) */}
           <div className="absolute top-3 right-3 lg:top-4 lg:right-4 z-50">
             <button 
               onClick={toggleMusic}
