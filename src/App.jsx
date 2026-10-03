@@ -470,7 +470,7 @@ function App() {
                     onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#ffffff'}
                   >
                     <img 
-                      src="https://raw.githubusercontent.com/prasetiyo08/anniversary_pict/main/Anniv/E.jpeg" 
+                      src="https://raw.githubusercontent.com/prasetiyo08/anniversary_pict/main/Anniv/F.jpeg" 
                       alt="Foto C" 
                       className="w-full aspect-square object-cover bg-gray-100" 
                     />
