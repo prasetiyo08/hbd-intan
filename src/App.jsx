@@ -17,10 +17,10 @@ function App() {
   const raindrops = Array.from({ length: 120 });
 
   return (
-    <div className="w-full min-h-screen bg-pink-50 flex items-center justify-center p-0 m-0 font-quicksand relative overflow-x-hidden">
+    <div className="w-full min-h-screen bg-pink-100 font-quicksand relative overflow-x-hidden">
       
       {/* ====================================================
-          CSS STYLING: HUJAN SUNSHOWER & ANIMASI ANIME
+          CSS STYLING: HUJAN SUNSHOWER & SMART BACKGROUND
           ==================================================== */}
       <style>{`
         @keyframes rainfall {
@@ -67,6 +67,20 @@ function App() {
         .cloud-1 { animation: floatCloud1 12s ease-in-out infinite; }
         .sun-sketch { animation: pulseGlow 6s ease-in-out infinite; }
         .star-twinkle { animation: twinkle 3s ease-in-out infinite; }
+
+        /* Background Pintar untuk PC dan HP tanpa potong gambar */
+        .smart-bg {
+          background-image: url('/bg-lucu.png');
+          background-size: contain;
+          background-repeat: repeat;
+          background-position: center top;
+        }
+        @media (min-width: 1024px) {
+          .smart-bg {
+            background-size: cover;
+            background-repeat: no-repeat;
+          }
+        }
       `}</style>
 
       {/* RENDER PARTIKEL HUJAN */}
@@ -90,34 +104,31 @@ function App() {
       })}
 
       {/* DEKORASI SKETSA ANIME */}
-      <div className="absolute top-4 right-6 z-20 pointer-events-none sun-sketch scale-75 md:scale-100">
+      <div className="absolute top-4 right-6 z-25 pointer-events-none sun-sketch scale-75 md:scale-100">
         <svg width="60" height="60" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
           <circle cx="50" cy="50" r="25" stroke="#FFA726" strokeWidth="3" strokeDasharray="6 4" fill="#FFE0B2" fillOpacity="0.6"/>
           <path d="M50 15V5M50 85V95M15 50H5M95 50H85M25 25L18 18M82 82L75 75M25 75L18 82M82 18L75 25" stroke="#FFA726" strokeWidth="3" strokeLinecap="round"/>
         </svg>
       </div>
 
-      <div className="absolute top-4 left-6 z-20 pointer-events-none cloud-1 scale-75 md:scale-100">
+      <div className="absolute top-4 left-6 z-25 pointer-events-none cloud-1 scale-75 md:scale-100">
         <svg width="100" height="50" viewBox="0 0 150 80" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M30 60H120C136.569 60 150 46.5685 150 30C150 13.4315 136.569 0 120 0C113.882 0 108.203 1.88812 103.419 5.15682C96.2925 1.99042 88.3582 0 80 0C60.67 0 44.408 13.518 40.852 31.545C37.585 30.547 34.053 30 30 30C13.431 30 0 43.431 0 60C0 76.569 13.431 90 30 90H120" stroke="#B0BEC5" strokeWidth="3" strokeDasharray="5 3" fill="white" fillOpacity="0.8"/>
         </svg>
       </div>
 
       {/* Sinar Matahari Sore (Z-30) */}
-      <div className="absolute inset-0 bg-gradient-to-tr from-amber-400/25 via-pink-400/10 to-orange-400/25 pointer-events-none z-30 min-h-screen" />
+      <div className="absolute inset-0 bg-gradient-to-tr from-amber-400/25 via-pink-400/10 to-orange-400/25 pointer-events-none z-30 min-h-full" />
 
       {/* 
         ====================================================
-        CONTAINER UTAMA (BACKGROUND .PNG MENYESUAIKAN ISI KONTEN)
+        CONTAINER UTAMA (SMART BACKGROUND)
         ====================================================
       */}
-      <div 
-        className="w-full min-h-screen bg-cover bg-center bg-no-repeat z-10 flex flex-col justify-center items-center py-20 px-4 md:px-8"
-        style={{ backgroundImage: "url('/bg-lucu.png')" }}
-      >
+      <div className="w-full min-h-screen smart-bg z-10 flex flex-col justify-start items-center py-20 px-4 md:px-8 relative">
 
-        {/* --- MAIN CONTENT (OTOMATIS KOLOM DI PC, TERSUSUN KE BAWAH SAAT DI PERKECIL/HP) --- */}
-        <div className="w-full max-w-[1300px] flex flex-col lg:flex-row gap-8 lg:gap-4 relative z-20 items-center lg:items-center justify-between">
+        {/* --- MAIN CONTENT (RESPONSIF PENUH: FLEKSIBEL DI PC MAUPUN HP) --- */}
+        <div className="w-full max-w-[1300px] flex flex-col lg:flex-row gap-8 lg:gap-4 relative z-20 items-center justify-between">
           
           {/* KOLOM KIRI (FOTO A & STICKY NOTE) */}
           <motion.div 
@@ -203,7 +214,7 @@ function App() {
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.6 }}
-            className="w-full lg:w-[28%] flex flex-col items-center gap-4 order-3 lg:order-3"
+            className="w-full lg:w-[28%] flex flex-col items-center gap-4 order-3 lg:order-3 mb-10 lg:mb-0"
           >
             <motion.p 
               whileHover={{ scale: 1.05, color: "#d97706" }}
