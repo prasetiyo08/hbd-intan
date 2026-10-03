@@ -8,7 +8,6 @@ function App() {
 
   const handleOpenLetter = () => {
     setIsOpen(true);
-    // Memutar musik secara otomatis saat tombol Open diklik
     if (audioRef.current) {
       audioRef.current.play().then(() => {
         setIsPlaying(true);
@@ -30,10 +29,10 @@ function App() {
   const raindrops = Array.from({ length: 120 });
 
   return (
-    <div className="w-full min-h-screen bg-pink-100 font-quicksand relative overflow-x-hidden">
+    <div className="w-full min-h-screen bg-[#fff0f3] font-quicksand relative overflow-x-hidden">
       
       {/* ====================================================
-          CSS STYLING: HUJAN SUNSHOWER & SMART BACKGROUND
+          CSS STYLING: SKETSA PENSIL WARNA & HUJAN SUNSHOWER
           ==================================================== */}
       <style>{`
         @keyframes rainfall {
@@ -81,6 +80,15 @@ function App() {
         .sun-sketch { animation: pulseGlow 6s ease-in-out infinite; }
         .star-twinkle { animation: twinkle 3s ease-in-out infinite; }
 
+        /* Efek Bingkai Coretan Pensil Warna (Anime Sketch Border) */
+        .sketch-border {
+          border: 3px dashed #ffb5a7;
+          border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+          box-shadow: 4px 4px 20px rgba(255, 180, 170, 0.25);
+          background: rgba(255, 255, 255, 0.85);
+          backdrop-filter: blur(8px);
+        }
+
         .smart-bg {
           background-image: url('/bg-lucu.png');
           background-size: contain;
@@ -103,7 +111,7 @@ function App() {
       />
 
       {/* ====================================================
-          HALAMAN PEMBUKA: AMPLOP SURAT (ENVELOPE COVER)
+          HALAMAN PEMBUKA: AMPLOP SURAT ESTETIK SKETSA PENSIL WARNA
           ==================================================== */}
       <AnimatePresence>
         {!isOpen && (
@@ -111,41 +119,49 @@ function App() {
             initial={{ opacity: 1 }}
             exit={{ opacity: 0, scale: 1.05 }}
             transition={{ duration: 0.8, ease: "easeInOut" }}
-            className="fixed inset-0 z-50 bg-[#ffe4e6] flex flex-col items-center justify-center p-4"
+            className="fixed inset-0 z-50 bg-[#fff5f5] flex flex-col items-center justify-center p-4 relative overflow-hidden"
           >
-            {/* Efek amplop surat lucu */}
+            {/* Dekorasi Pensil Warna Latar Belakang */}
+            <div className="absolute top-12 left-16 text-3xl animate-bounce text-pink-300">☁️</div>
+            <div className="absolute bottom-16 right-20 text-3xl animate-pulse text-amber-300">✨</div>
+            <div className="absolute top-20 right-24 text-2xl star-twinkle text-orange-300">✦</div>
+            <div className="absolute bottom-20 left-24 text-2xl star-twinkle text-pink-400">🌸</div>
+
+            {/* Kotak Surat Utama dengan Gaya Coretan Pensil */}
             <motion.div 
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
+              initial={{ y: 20, opacity: 0, rotate: -1 }}
+              animate={{ y: 0, opacity: 1, rotate: 0 }}
               transition={{ duration: 0.6 }}
-              className="bg-white/90 backdrop-blur-md p-8 sm:p-12 rounded-3xl shadow-xl border-4 border-pink-200 flex flex-col items-center max-w-sm w-full text-center relative overflow-hidden"
+              className="sketch-border p-8 sm:p-12 flex flex-col items-center max-w-md w-full text-center relative"
             >
-              {/* Hiasan kecil di amplop */}
-              <div className="absolute -top-6 -right-6 text-6xl opacity-40">🌸</div>
-              <div className="absolute -bottom-6 -left-6 text-6xl opacity-40">💌</div>
+              {/* Pita atau Hiasan Doodle di Sudut */}
+              <div className="absolute -top-4 -right-3 text-4xl transform rotate-12">🎀</div>
+              <div className="absolute -bottom-3 -left-3 text-3xl transform -rotate-12">💌</div>
 
               <motion.div 
-                animate={{ scale: [1, 1.1, 1] }}
-                transition={{ repeat: Infinity, duration: 2 }}
-                className="text-6xl mb-4"
+                animate={{ scale: [1, 1.12, 1], rotate: [-3, 3, -3] }}
+                transition={{ repeat: Infinity, duration: 2.5 }}
+                className="text-7xl mb-3 drop-shadow-sm"
               >
                 💌
               </motion.div>
 
-              <h2 className="font-fredoka text-2xl sm:text-3xl text-pink-500 font-bold mb-2">
+              <h2 className="font-fredoka text-2xl sm:text-3xl text-[#ff758f] font-medium mb-2 tracking-wide">
                 A Special Letter for You
               </h2>
-              <p className="font-caveat text-gray-600 text-lg sm:text-xl mb-6">
-                Click below to open your birthday surprise ♡
+              
+              <p className="font-caveat text-gray-600 text-xl sm:text-2xl mb-8 leading-snug">
+                "Sebuah kejutan kecil penuh cinta, khusus untuk hari spesialmu..." ♡
               </p>
 
               <motion.button 
-                whileHover={{ scale: 1.08 }}
+                whileHover={{ scale: 1.06, backgroundColor: "#ff758f" }}
                 whileTap={{ scale: 0.95 }}
                 onClick={handleOpenLetter}
-                className="bg-gradient-to-r from-pink-400 to-pink-500 text-white font-fredoka px-8 py-3 rounded-full shadow-lg text-lg tracking-wide hover:from-pink-500 hover:to-pink-600 transition-all cursor-pointer border border-pink-200"
+                className="bg-[#ff8fa3] text-white font-fredoka px-8 py-3.5 rounded-full shadow-md text-lg tracking-wider transition-all cursor-pointer border-2 border-white/80 flex items-center gap-2"
               >
-                Open Letter ✉️
+                <span>Open Letter</span>
+                <span className="text-xl">✨</span>
               </motion.button>
             </motion.div>
           </motion.div>
@@ -154,7 +170,7 @@ function App() {
 
 
       {/* ====================================================
-          KONTEN UTAMA WEB (MUNCUL SETELAH AMPLOP DIBUKA)
+          KONTEN UTAMA WEB (SETELAH AMPLOP DIBUKA)
           ==================================================== */}
       {isOpen && (
         <>
