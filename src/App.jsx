@@ -356,7 +356,7 @@ function App() {
                 >
                   <div className="absolute -top-3 left-4 w-16 h-5 bg-pink-200/60 -rotate-6 z-10"></div>
                   <img 
-                    src="https://raw.githubusercontent.com/prasetiyo08/anniversary_pict/main/Anniv/A.JPG" 
+                    src="https://raw.githubusercontent.com/prasetiyo08/anniversary_pict/main/Anniv/D.jpeg" 
                     alt="Foto A" 
                     className="w-full aspect-[4/5] object-cover bg-gray-100 rounded-sm" 
                   />
@@ -454,7 +454,7 @@ function App() {
                     onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#ffffff'}
                   >
                     <img 
-                      src="https://raw.githubusercontent.com/prasetiyo08/anniversary_pict/main/Anniv/B.jpeg" 
+                      src="https://raw.githubusercontent.com/prasetiyo08/anniversary_pict/main/Anniv/E.jpeg" 
                       alt="Foto B" 
                       className="w-full aspect-square object-cover bg-gray-100" 
                     />
@@ -470,7 +470,7 @@ function App() {
                     onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#ffffff'}
                   >
                     <img 
-                      src="https://raw.githubusercontent.com/prasetiyo08/anniversary_pict/main/Anniv/C.jpeg" 
+                      src="https://raw.githubusercontent.com/prasetiyo08/anniversary_pict/main/Anniv/E.jpeg" 
                       alt="Foto C" 
                       className="w-full aspect-square object-cover bg-gray-100" 
                     />
