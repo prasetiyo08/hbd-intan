@@ -3,11 +3,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 function App() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef(null);
 
   const handleOpenLetter = () => {
-    setIsOpen(true);
+    setIsTransitioning(true); // Animasi daun soft pink & soft green 4.5 detik
     if (audioRef.current) {
       audioRef.current.play().then(() => {
         setIsPlaying(true);
@@ -15,6 +16,10 @@ function App() {
         console.log("Autoplay blocked or failed:", error);
       });
     }
+
+    setTimeout(() => {
+      setIsOpen(true);
+    }, 4500);
   };
 
   const toggleMusic = () => {
@@ -26,67 +31,132 @@ function App() {
     setIsPlaying(!isPlaying);
   };
 
-  const raindrops = Array.from({ length: 120 });
+  const raindrops = Array.from({ length: 45 });
+  const fallingLeaves = Array.from({ length: 12 });
+  const windLeaves = Array.from({ length: 30 });
+
+  // Fungsi helper untuk mendapatkan warna hover random antara soft pink & soft green
+  const getRandomHoverColor = () => {
+    const colors = ['#ffb5a7', '#86efac', '#fbcfe8', '#bbf7d0', '#f472b6', '#4ade80'];
+    return colors[Math.floor(Math.random() * colors.length)];
+  };
 
   return (
-    <div className="w-full min-h-screen bg-[#fff0f3] font-quicksand relative overflow-x-hidden">
+    <div className="w-full min-h-screen bg-pink-50 font-quicksand relative overflow-x-hidden">
       
       {/* ====================================================
-          CSS STYLING: SKETSA PENSIL WARNA & HUJAN SUNSHOWER
+          CSS 60 FPS GPU HARDWARE ACCELERATED & THEME COLORS
           ==================================================== */}
       <style>{`
         @keyframes rainfall {
           0% { 
-            transform: translate(120px, -100px) rotate(40deg); 
+            transform: translate3d(80px, -80px, 0) rotate(35deg); 
             opacity: 0; 
           }
-          15% { 
-            opacity: 0.85; 
-          }
-          85% { 
-            opacity: 0.85; 
-          }
+          20% { opacity: 0.7; }
+          80% { opacity: 0.7; }
           100% { 
-            transform: translate(-500px, 110vh) rotate(40deg); 
+            transform: translate3d(-300px, 110vh, 0) rotate(35deg); 
             opacity: 0; 
           }
         }
         .rain-drop {
           position: fixed;
-          background: linear-gradient(to bottom, rgba(255, 185, 120, 0.9), rgba(255, 150, 100, 0.2));
-          width: 2.5px;
-          height: 35px;
-          border-radius: 50% 50% 50% 0%; 
+          background: linear-gradient(to bottom, rgba(255, 200, 150, 0.8), rgba(255, 150, 100, 0.1));
+          width: 2px;
+          height: 25px;
+          border-radius: 50%;
           pointer-events: none;
           z-index: 40;
-          box-shadow: 0 0 6px rgba(255, 160, 60, 0.6);
           animation: rainfall linear infinite;
+          will-change: transform;
+          transform: translate3d(0,0,0);
+        }
+
+        @keyframes fallAndSway {
+          0% {
+            transform: translate3d(0px, -10vh, 0) rotate(0deg);
+            opacity: 0;
+          }
+          15% { opacity: 1; }
+          50% {
+            transform: translate3d(35px, 50vh, 0) rotate(180deg);
+          }
+          80% {
+            transform: translate3d(-25px, 85vh, 0) rotate(270deg);
+          }
+          100% {
+            transform: translate3d(15px, 110vh, 0) rotate(360deg);
+            opacity: 0;
+          }
+        }
+
+        .falling-item {
+          position: fixed;
+          pointer-events: none;
+          z-index: 30;
+          animation: fallAndSway linear infinite;
+          will-change: transform;
+          transform: translate3d(0,0,0);
+        }
+
+        /* Animasi Daun Soft Pink & Soft Green Tertiup Angin */
+        @keyframes windBlow {
+          0% {
+            transform: translate3d(-50vw, 50vh, 0) rotate(0deg);
+            opacity: 0;
+          }
+          20% { opacity: 1; }
+          100% {
+            transform: translate3d(120vw, -50vh, 0) rotate(720deg);
+            opacity: 0.9;
+          }
+        }
+
+        .wind-leaf {
+          position: fixed;
+          pointer-events: none;
+          z-index: 60;
+          animation: windBlow 4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+          will-change: transform;
+        }
+
+        @keyframes floatEnvelope {
+          0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+          50% { transform: translate3d(0, -6px, 0) rotate(0.8deg); }
+        }
+        .envelope-float {
+          animation: floatEnvelope 4s ease-in-out infinite;
+          will-change: transform;
+        }
+
+        /* Portal Berputar Searah Jarum Jam Warna Soft Pink & Green */
+        @keyframes rotateClockwise {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+        .portal-spin {
+          animation: rotateClockwise 15s linear infinite;
+          will-change: transform;
+          transform: translate3d(0,0,0);
         }
 
         @keyframes floatCloud1 {
-          0% { transform: translateX(-20px); }
-          50% { transform: translateX(20px); }
-          100% { transform: translateX(-20px); }
+          0% { transform: translate3d(-20px, 0, 0); }
+          50% { transform: translate3d(20px, 0, 0); }
+          100% { transform: translate3d(-20px, 0, 0); }
         }
-        @keyframes pulseGlow {
-          0%, 100% { transform: scale(1); opacity: 0.8; }
-          50% { transform: scale(1.08); opacity: 1; }
+        .cloud-1 { 
+          animation: floatCloud1 14s ease-in-out infinite; 
+          will-change: transform; 
+          transform: translate3d(0,0,0);
         }
-        @keyframes twinkle {
-          0%, 100% { opacity: 0.3; transform: scale(0.8); }
-          50% { opacity: 1; transform: scale(1.2); }
-        }
-        .cloud-1 { animation: floatCloud1 12s ease-in-out infinite; }
-        .sun-sketch { animation: pulseGlow 6s ease-in-out infinite; }
-        .star-twinkle { animation: twinkle 3s ease-in-out infinite; }
 
-        /* Efek Bingkai Coretan Pensil Warna (Anime Sketch Border) */
         .sketch-border {
           border: 3px dashed #ffb5a7;
           border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
-          box-shadow: 4px 4px 20px rgba(255, 180, 170, 0.25);
-          background: rgba(255, 255, 255, 0.85);
-          backdrop-filter: blur(8px);
+          box-shadow: 0 10px 30px rgba(255, 182, 193, 0.3);
+          background: rgba(255, 255, 255, 0.94);
         }
 
         .smart-bg {
@@ -111,58 +181,130 @@ function App() {
       />
 
       {/* ====================================================
-          HALAMAN PEMBUKA: AMPLOP SURAT ESTETIK SKETSA PENSIL WARNA
+          HALAMAN PEMBUKA & PORTAL SOFT PINK & GREEN
           ==================================================== */}
       <AnimatePresence>
         {!isOpen && (
           <motion.div 
             initial={{ opacity: 1 }}
-            exit={{ opacity: 0, scale: 1.05 }}
-            transition={{ duration: 0.8, ease: "easeInOut" }}
-            className="fixed inset-0 z-50 bg-[#fff5f5] flex flex-col items-center justify-center p-4 relative overflow-hidden"
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.8 }}
+            className="fixed inset-0 z-50 smart-bg bg-pink-50 flex items-center justify-center p-4 overflow-hidden"
           >
-            {/* Dekorasi Pensil Warna Latar Belakang */}
-            <div className="absolute top-12 left-16 text-3xl animate-bounce text-pink-300">☁️</div>
-            <div className="absolute bottom-16 right-20 text-3xl animate-pulse text-amber-300">✨</div>
-            <div className="absolute top-20 right-24 text-2xl star-twinkle text-orange-300">✦</div>
-            <div className="absolute bottom-20 left-24 text-2xl star-twinkle text-pink-400">🌸</div>
+            <div className="absolute inset-0 bg-gradient-to-tr from-pink-100/50 via-pink-50/30 to-emerald-100/20 pointer-events-none" />
 
-            {/* Kotak Surat Utama dengan Gaya Coretan Pensil */}
+            <AnimatePresence>
+              {isTransitioning && (
+                <div className="absolute inset-0 z-50 pointer-events-none overflow-hidden bg-pink-50/85 backdrop-blur-[2px]">
+                  {windLeaves.map((_, i) => {
+                    const icons = ['🌸', '🍃', '💮', '🌿', '🌷', '🌱'];
+                    const randomIcon = icons[i % icons.length];
+                    const randomTop = Math.random() * 100;
+                    const randomDelay = Math.random() * 1.5;
+                    const randomSize = Math.random() * 20 + 20;
+
+                    return (
+                      <div
+                        key={i}
+                        className="wind-leaf"
+                        style={{
+                          top: `${randomTop}%`,
+                          fontSize: `${randomSize}px`,
+                          animationDelay: `${randomDelay}s`,
+                        }}
+                      >
+                        {randomIcon}
+                      </div>
+                    );
+                  })}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <p className="font-caveat text-3xl sm:text-4xl text-pink-400 font-bold animate-pulse drop-shadow-sm">
+                      Opening your letter... ♡
+                    </p>
+                  </div>
+                </div>
+              )}
+            </AnimatePresence>
+
+            <div className="absolute inset-0 pointer-events-none flex items-center justify-center z-20">
+              <div className="w-[340px] h-[340px] sm:w-[540px] sm:h-[540px] rounded-full border-[20px] border-dashed border-pink-300/80 flex items-center justify-center relative shadow-[0_0_80px_rgba(255,182,193,0.6)] bg-emerald-100/10 backdrop-blur-[1px] portal-spin">
+                <div className="absolute -top-8 text-5xl">🌸</div>
+                <div className="absolute -bottom-8 text-5xl">🌿</div>
+                <div className="absolute -left-8 text-5xl">🍃</div>
+                <div className="absolute -right-8 text-5xl">🌷</div>
+                <div className="absolute top-1/4 -left-6 text-4xl">💮</div>
+                <div className="absolute bottom-1/4 -right-6 text-4xl">🌱</div>
+              </div>
+            </div>
+
+            {fallingLeaves.map((_, i) => {
+              const icons = ['🌸', '🌷', '🍃', '🌿', '🌱', '💮'];
+              const randomIcon = icons[i % icons.length];
+              const randomLeft = (i * 8) % 100;
+              const randomDuration = 5 + (i % 4);
+              const randomDelay = (i * 0.4);
+              const randomSize = 18 + (i % 6);
+
+              return (
+                <div
+                  key={i}
+                  className="falling-item"
+                  style={{
+                    left: `${randomLeft}%`,
+                    top: '-50px',
+                    fontSize: `${randomSize}px`,
+                    animationDuration: `${randomDuration}s`,
+                    animationDelay: `${randomDelay}s`,
+                  }}
+                >
+                  {randomIcon}
+                </div>
+              );
+            })}
+
+            <div className="absolute top-10 left-12 cloud-1 pointer-events-none opacity-90">
+              <svg width="110" height="55" viewBox="0 0 150 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M30 60H120C136.569 60 150 46.5685 150 30C150 13.4315 136.569 0 120 0C113.882 0 108.203 1.88812 103.419 5.15682C96.2925 1.99042 88.3582 0 80 0C60.67 0 44.408 13.518 40.852 31.545C37.585 30.547 34.053 30 30 30C13.431 30 0 43.431 0 60C0 76.569 13.431 90 30 90H120" stroke="#B0BEC5" strokeWidth="3" strokeDasharray="5 3" fill="white" fillOpacity="0.8"/>
+              </svg>
+            </div>
+
+            <div className="absolute bottom-0 left-0 right-0 flex justify-between items-end px-6 pointer-events-none opacity-90">
+              <div className="text-3xl">🌷</div>
+              <div className="text-4xl">🌱</div>
+              <div className="text-3xl">🌸</div>
+              <div className="text-4xl">🌿</div>
+              <div className="text-3xl">🌷</div>
+            </div>
+
             <motion.div 
-              initial={{ y: 20, opacity: 0, rotate: -1 }}
-              animate={{ y: 0, opacity: 1, rotate: 0 }}
-              transition={{ duration: 0.6 }}
-              className="sketch-border p-8 sm:p-12 flex flex-col items-center max-w-md w-full text-center relative"
+              initial={{ y: 20, opacity: 0, scale: 0.95 }}
+              animate={isTransitioning ? { scale: 0, opacity: 0, rotate: 10 } : { y: 0, opacity: 1, scale: 1 }}
+              transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+              className="sketch-border p-8 sm:p-12 flex flex-col items-center max-w-md w-full text-center relative z-30 envelope-float"
             >
-              {/* Pita atau Hiasan Doodle di Sudut */}
               <div className="absolute -top-4 -right-3 text-4xl transform rotate-12">🎀</div>
               <div className="absolute -bottom-3 -left-3 text-3xl transform -rotate-12">💌</div>
 
-              <motion.div 
-                animate={{ scale: [1, 1.12, 1], rotate: [-3, 3, -3] }}
-                transition={{ repeat: Infinity, duration: 2.5 }}
-                className="text-7xl mb-3 drop-shadow-sm"
-              >
+              <div className="text-7xl mb-3 filter drop-shadow-md">
                 💌
-              </motion.div>
+              </div>
 
-              <h2 className="font-fredoka text-2xl sm:text-3xl text-[#ff758f] font-medium mb-2 tracking-wide">
+              <h2 className="font-fredoka text-2xl sm:text-3xl text-[#ff758f] font-bold mb-2 tracking-wide drop-shadow-sm">
                 A Special Letter for You
               </h2>
               
-              <p className="font-caveat text-gray-600 text-xl sm:text-2xl mb-8 leading-snug">
+              <p className="font-caveat text-gray-700 text-xl sm:text-2xl mb-8 leading-snug font-medium">
                 "Sebuah kejutan kecil penuh cinta, khusus untuk hari spesialmu..." ♡
               </p>
 
-              <motion.button 
-                whileHover={{ scale: 1.06, backgroundColor: "#ff758f" }}
-                whileTap={{ scale: 0.95 }}
+              <button 
                 onClick={handleOpenLetter}
-                className="bg-[#ff8fa3] text-white font-fredoka px-8 py-3.5 rounded-full shadow-md text-lg tracking-wider transition-all cursor-pointer border-2 border-white/80 flex items-center gap-2"
+                disabled={isTransitioning}
+                className="bg-[#ff8fa3] hover:bg-[#ff758f] text-white font-fredoka px-8 py-3.5 rounded-full shadow-lg text-lg tracking-wider transition-all cursor-pointer border-2 border-white flex items-center gap-2 mx-auto"
               >
-                <span>Open Letter</span>
+                <span>{isTransitioning ? "Opening..." : "Open Letter"}</span>
                 <span className="text-xl">✨</span>
-              </motion.button>
+              </button>
             </motion.div>
           </motion.div>
         )}
@@ -170,15 +312,19 @@ function App() {
 
 
       {/* ====================================================
-          KONTEN UTAMA WEB (SETELAH AMPLOP DIBUKA)
+          KONTEN UTAMA WEB (DENGAN INTERAKSI HOVER TIMBUL & WARNA RANDOM HALUS)
           ==================================================== */}
       {isOpen && (
-        <>
-          {/* RENDER PARTIKEL HUJAN */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+          className="w-full min-h-screen relative"
+        >
           {raindrops.map((_, i) => {
-            const randomLeft = Math.random() * 160 - 30; 
-            const randomDuration = Math.random() * 1.2 + 0.8; 
-            const randomDelay = Math.random() * 5;
+            const randomLeft = (i * 15) % 160 - 20; 
+            const randomDuration = 1.0 + (i % 3) * 0.3; 
+            const randomDelay = (i * 0.1);
 
             return (
               <div
@@ -186,7 +332,7 @@ function App() {
                 className="rain-drop"
                 style={{
                   left: `${randomLeft}%`,
-                  top: '-80px',
+                  top: '-50px',
                   animationDuration: `${randomDuration}s`,
                   animationDelay: `${randomDelay}s`,
                 }}
@@ -194,40 +340,19 @@ function App() {
             );
           })}
 
-          {/* DEKORASI SKETSA ANIME */}
-          <div className="absolute top-4 right-6 z-25 pointer-events-none sun-sketch scale-75 md:scale-100">
-            <svg width="60" height="60" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="50" cy="50" r="25" stroke="#FFA726" strokeWidth="3" strokeDasharray="6 4" fill="#FFE0B2" fillOpacity="0.6"/>
-              <path d="M50 15V5M50 85V95M15 50H5M95 50H85M25 25L18 18M82 82L75 75M25 75L18 82M82 18L75 25" stroke="#FFA726" strokeWidth="3" strokeLinecap="round"/>
-            </svg>
-          </div>
-
-          <div className="absolute top-4 left-6 z-25 pointer-events-none cloud-1 scale-75 md:scale-100">
-            <svg width="100" height="50" viewBox="0 0 150 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M30 60H120C136.569 60 150 46.5685 150 30C150 13.4315 136.569 0 120 0C113.882 0 108.203 1.88812 103.419 5.15682C96.2925 1.99042 88.3582 0 80 0C60.67 0 44.408 13.518 40.852 31.545C37.585 30.547 34.053 30 30 30C13.431 30 0 43.431 0 60C0 76.569 13.431 90 30 90H120" stroke="#B0BEC5" strokeWidth="3" strokeDasharray="5 3" fill="white" fillOpacity="0.8"/>
-            </svg>
-          </div>
-
-          {/* Sinar Matahari Sore (Z-30) */}
-          <div className="absolute inset-0 bg-gradient-to-tr from-amber-400/25 via-pink-400/10 to-orange-400/25 pointer-events-none z-30 min-h-full" />
-
-          {/* CONTAINER UTAMA (SMART BACKGROUND) */}
           <div className="w-full min-h-screen smart-bg z-10 flex flex-col justify-start items-center py-20 px-4 md:px-8 relative">
 
-            {/* --- MAIN CONTENT --- */}
             <div className="w-full max-w-[1300px] flex flex-col lg:flex-row gap-8 lg:gap-4 relative z-20 items-center justify-between">
               
-              {/* KOLOM KIRI (FOTO A & STICKY NOTE) */}
-              <motion.div 
-                initial={{ opacity: 0, x: -50 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-                className="w-full lg:w-[28%] flex flex-col items-center gap-4 order-2 lg:order-1"
-              >
+              {/* KOLOM KIRI (FOTO A & STICKY NOTE) - DENGAN HOVER TIMBUL & WARNA RANDOM */}
+              <div className="w-full lg:w-[28%] flex flex-col items-center gap-4 order-2 lg:order-1">
                 <motion.div 
-                  whileHover={{ scale: 1.05, rotate: 0 }}
+                  whileHover={{ scale: 1.05, y: -6, rotate: 0 }}
                   transition={{ type: "spring", stiffness: 300 }}
                   className="bg-white p-2.5 pb-10 rounded-sm shadow-md transform -rotate-3 relative w-[70%] sm:w-[50%] lg:w-[80%] max-w-[240px] cursor-pointer"
+                  style={{ transition: 'background-color 0.4s ease, box-shadow 0.4s ease' }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = getRandomHoverColor()}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#ffffff'}
                 >
                   <div className="absolute -top-3 left-4 w-16 h-5 bg-pink-200/60 -rotate-6 z-10"></div>
                   <img 
@@ -241,42 +366,50 @@ function App() {
                 <div className="flex items-end gap-2 w-[75%] justify-center">
                   <div className="text-[3.5rem] animate-bounce">🐰</div>
                   <motion.div 
-                    whileHover={{ scale: 1.08, rotate: 0 }}
-                    className="bg-[#e8f5e9] p-3 shadow-sm transform rotate-6 relative border border-green-100 w-28 cursor-pointer transition-transform"
+                    whileHover={{ scale: 1.06, y: -4 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                    className="bg-[#e8f5e9] p-3 shadow-sm transform rotate-6 relative border border-green-100 w-28 cursor-pointer"
+                    style={{ transition: 'background-color 0.4s ease' }}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = getRandomHoverColor()}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#e8f5e9'}
                   >
                     <p className="font-caveat text-lg text-green-700 text-center leading-tight">
                       Always be happy my love ♡
                     </p>
                   </motion.div>
                 </div>
-              </motion.div>
+              </div>
 
-              {/* KOLOM TENGAH (TEKS UTAMA) */}
-              <motion.div 
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.4 }}
-                className="w-full lg:w-[42%] flex flex-col items-center justify-center text-center order-1 lg:order-2 px-2"
-              >
+              {/* KOLOM TENGAH (TEKS UTAMA & KOTAK UCAPAN) - DENGAN HOVER TIMBUL & WARNA RANDOM */}
+              <div className="w-full lg:w-[42%] flex flex-col items-center justify-center text-center order-1 lg:order-2 px-2">
                 <motion.h1 
-                  whileHover={{ scale: 1.03, color: "#ff5c9d" }}
+                  whileHover={{ scale: 1.03, y: -3 }}
                   transition={{ type: "spring", stiffness: 400 }}
-                  className="font-fredoka text-4xl sm:text-5xl lg:text-6xl font-medium text-[#ff7eb3] leading-tight cursor-pointer drop-shadow-sm"
+                  className="font-fredoka text-4xl sm:text-5xl lg:text-6xl font-medium text-[#ff7eb3] leading-tight drop-shadow-sm cursor-pointer"
+                  style={{ transition: 'color 0.3s ease' }}
+                  onMouseEnter={(e) => e.currentTarget.style.color = getRandomHoverColor()}
+                  onMouseLeave={(e) => e.currentTarget.style.color = '#ff7eb3'}
                 >
                   Happy 23rd<br/>Birthday!
                 </motion.h1>
                 
                 <motion.div 
-                  whileHover={{ scale: 1.05 }}
+                  whileHover={{ scale: 1.05, y: -2 }}
                   className="bg-white/80 backdrop-blur-md text-[#5cb85c] px-5 py-1.5 rounded-full font-fredoka text-lg lg:text-xl my-3 shadow-sm border border-green-100 cursor-pointer"
+                  style={{ transition: 'background-color 0.4s ease' }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = getRandomHoverColor()}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.8)'}
                 >
                   Intan Putri Wulandari 🌸
                 </motion.div>
                 
                 <motion.div 
-                  whileHover={{ scale: 1.02 }}
+                  whileHover={{ scale: 1.02, y: -4 }}
                   transition={{ type: "spring", stiffness: 300 }}
                   className="bg-white/70 backdrop-blur-md p-4 lg:p-5 rounded-2xl border border-white/80 shadow-sm max-w-lg cursor-pointer"
+                  style={{ transition: 'background-color 0.4s ease, box-shadow 0.4s ease' }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = getRandomHoverColor()}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.7)'}
                 >
                   <p className="font-caveat text-gray-800 text-lg sm:text-xl lg:text-2xl leading-snug font-medium mb-3">
                     Happy Birthday sayang!, tepat di tanggal 10 Oktober ini, kamu genap berusia 23 tahun, yeaay, Semoga di umur yang baru ini kamu semakin dewasa, sehat selalu, dan semua impian kamu terwujud ya cantik lucu malu malu akuuu.
@@ -289,32 +422,36 @@ function App() {
                 </motion.div>
 
                 <motion.div 
-                  whileHover={{ scale: 1.06, backgroundColor: "rgba(255, 255, 255, 0.95)" }}
-                  className="border border-pink-200 text-pink-500 px-5 py-1.5 rounded-full text-xs font-semibold mt-4 bg-white/90 shadow-sm cursor-pointer transition-colors"
+                  whileHover={{ scale: 1.06, y: -2 }}
+                  className="border border-pink-200 text-pink-500 px-5 py-1.5 rounded-full text-xs font-semibold mt-4 bg-white/90 shadow-sm cursor-pointer"
+                  style={{ transition: 'background-color 0.4s ease' }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = getRandomHoverColor()}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.9)'}
                 >
                   ♡ 23 and still my favorite girl ♡
                 </motion.div>
-              </motion.div>
+              </div>
 
-              {/* KOLOM KANAN (FOTO B & C SERTA CHECKLIST) */}
-              <motion.div 
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8, delay: 0.6 }}
-                className="w-full lg:w-[28%] flex flex-col items-center gap-4 order-3 lg:order-3 mb-10 lg:mb-0"
-              >
+              {/* KOLOM KANAN (FOTO B & C SERTA CHECKLIST) - DENGAN HOVER TIMBUL & WARNA RANDOM */}
+              <div className="w-full lg:w-[28%] flex flex-col items-center gap-4 order-3 lg:order-3 mb-10 lg:mb-0">
                 <motion.p 
-                  whileHover={{ scale: 1.05, color: "#d97706" }}
-                  className="font-caveat text-lg text-gray-700 font-semibold text-center lg:text-right w-[80%] pr-0 lg:pr-2 leading-tight cursor-pointer transition-colors drop-shadow-sm"
+                  whileHover={{ scale: 1.04, y: -2 }}
+                  className="font-caveat text-lg text-gray-700 font-semibold text-center lg:text-right w-[80%] pr-0 lg:pr-2 leading-tight drop-shadow-sm cursor-pointer"
+                  style={{ transition: 'color 0.3s ease' }}
+                  onMouseEnter={(e) => e.currentTarget.style.color = getRandomHoverColor()}
+                  onMouseLeave={(e) => e.currentTarget.style.color = '#374151'}
                 >
                   Good things take time, just like us ♡
                 </motion.p>
 
                 <div className="relative w-full h-[190px] lg:h-[200px] flex justify-center">
                   <motion.div 
-                    whileHover={{ scale: 1.08, rotate: 0, zIndex: 30 }}
+                    whileHover={{ scale: 1.08, y: -6, rotate: 0, zIndex: 30 }}
                     transition={{ type: "spring", stiffness: 300 }}
                     className="absolute left-6 sm:left-24 lg:left-6 top-0 bg-white p-2 pb-8 rounded-sm shadow-md transform -rotate-6 w-[110px] lg:w-[120px] z-10 cursor-pointer"
+                    style={{ transition: 'background-color 0.4s ease' }}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = getRandomHoverColor()}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#ffffff'}
                   >
                     <img 
                       src="https://raw.githubusercontent.com/prasetiyo08/anniversary_pict/main/Anniv/B.jpeg" 
@@ -325,9 +462,12 @@ function App() {
                   </motion.div>
                   
                   <motion.div 
-                    whileHover={{ scale: 1.08, rotate: 0, zIndex: 30 }}
+                    whileHover={{ scale: 1.08, y: -6, rotate: 0, zIndex: 30 }}
                     transition={{ type: "spring", stiffness: 300 }}
                     className="absolute right-6 sm:right-24 lg:right-6 top-10 bg-white p-2 pb-8 rounded-sm shadow-xl transform rotate-6 w-[110px] lg:w-[120px] z-20 cursor-pointer"
+                    style={{ transition: 'background-color 0.4s ease' }}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = getRandomHoverColor()}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#ffffff'}
                   >
                     <img 
                       src="https://raw.githubusercontent.com/prasetiyo08/anniversary_pict/main/Anniv/C.jpeg" 
@@ -340,19 +480,22 @@ function App() {
 
                 <div className="flex gap-3 items-end w-[85%] sm:w-[60%] lg:w-[85%] justify-center">
                   <motion.div 
-                    whileHover={{ scale: 1.03 }}
+                    whileHover={{ scale: 1.03, y: -3 }}
                     className="bg-white/85 backdrop-blur-md p-3 rounded-xl shadow-sm border border-pink-200 text-gray-800 space-y-1 font-medium flex-1 cursor-pointer"
+                    style={{ transition: 'background-color 0.4s ease' }}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = getRandomHoverColor()}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.85)'}
                   >
-                    <p className="font-caveat text-lg leading-tight hover:text-pink-500 transition-colors">✓ sehat selalu</p>
-                    <p className="font-caveat text-lg leading-tight hover:text-pink-500 transition-colors">✓ bahagia terus</p>
-                    <p className="font-caveat text-lg leading-tight hover:text-pink-500 transition-colors">✓ selalu jadi diri sendiri</p>
-                    <p className="font-caveat text-lg leading-tight hover:text-pink-500 transition-colors">✓ sukses dengan mimpi2nya</p>
-                    <p className="font-caveat text-lg leading-tight hover:text-pink-500 transition-colors">✓ kita selalu bersama ♡</p>
+                    <p className="font-caveat text-lg leading-tight">✓ sehat selalu</p>
+                    <p className="font-caveat text-lg leading-tight">✓ bahagia terus</p>
+                    <p className="font-caveat text-lg leading-tight">✓ selalu jadi diri sendiri</p>
+                    <p className="font-caveat text-lg leading-tight">✓ sukses dengan mimpi2nya</p>
+                    <p className="font-caveat text-lg leading-tight">✓ kita selalu bersama ♡</p>
                   </motion.div>
                   <div className="text-4xl mb-1 animate-pulse">🎂</div>
                 </div>
 
-              </motion.div>
+              </div>
 
             </div>
           </div>
@@ -369,7 +512,7 @@ function App() {
               </span>
             </button>
           </div>
-        </>
+        </motion.div>
       )}
     </div>
   );
