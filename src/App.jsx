@@ -194,16 +194,16 @@ function App() {
         }
       `}</style>
 
-      {/* Audio dari folder public/music */}
+      {/* Audio menggunakan URL Langsung dari GitHub */}
       <audio 
         ref={audioRef}
         loop 
-        src="/music/My-My-Love.mp3" 
+        src="https://raw.githubusercontent.com/prasetiyo08/anniversary_pict/main/music/My-My-Love.mp3" 
       />
       <audio 
         ref={rainAudioRef}
         loop 
-        src="/music/rain.mp3" 
+        src="https://raw.githubusercontent.com/prasetiyo08/anniversary_pict/main/music/rain.mp3" 
       />
 
       <AnimatePresence>
