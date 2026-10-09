@@ -18,14 +18,14 @@ const FloatingRain = () => {
         <motion.div
           key={drop.id}
           initial={{ opacity: 0, y: -50, x: `${drop.x}vw` }}
-          animate={{ opacity: [0, 0.40, 0.40, 0], y: '100vh' }} // Opasitas dinaikkan menjadi 40%
+          animate={{ opacity: [0, 0.40, 0.40, 0], y: '100vh' }}
           transition={{ duration: drop.duration, delay: drop.delay, ease: 'linear', repeat: Infinity }}
           style={{
             position: 'absolute',
             top: 0,
             width: `${drop.width}px`,
             height: `${drop.height}px`,
-            backgroundColor: 'rgba(30, 30, 30, 0.40)', // Warna air di kantong plastik hitam lembut dengan opasitas 40%
+            backgroundColor: 'rgba(30, 30, 30, 0.40)',
             borderRadius: '50% 50% 50% 50% / 60% 60% 40% 40%',
             boxShadow: 'inset 0 1px 2px rgba(255, 255, 255, 0.2), 0 1px 3px rgba(0, 0, 0, 0.2)',
             backdropFilter: 'blur(1px)',
@@ -41,15 +41,27 @@ function App() {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [showRain, setShowRain] = useState(false);
+  
+  // Referensi untuk musik utama dan efek hujan
   const audioRef = useRef(null);
+  const rainAudioRef = useRef(null);
 
   const handleOpenLetter = () => {
     setIsTransitioning(true); 
+    
+    // Mainkan musik utama
     if (audioRef.current) {
       audioRef.current.play().then(() => {
         setIsPlaying(true);
       }).catch((error) => {
         console.log("Autoplay blocked or failed:", error);
+      });
+    }
+
+    // Mainkan efek suara hujan
+    if (rainAudioRef.current) {
+      rainAudioRef.current.play().catch((error) => {
+        console.log("Rain autoplay blocked or failed:", error);
       });
     }
 
@@ -62,8 +74,10 @@ function App() {
   const toggleMusic = () => {
     if (isPlaying) {
       audioRef.current.pause();
+      if (rainAudioRef.current) rainAudioRef.current.pause();
     } else {
       audioRef.current.play();
+      if (rainAudioRef.current) rainAudioRef.current.play();
     }
     setIsPlaying(!isPlaying);
   };
@@ -180,10 +194,16 @@ function App() {
         }
       `}</style>
 
+      {/* Audio dari folder public/music */}
       <audio 
         ref={audioRef}
         loop 
-        src="https://raw.githubusercontent.com/prasetiyo08/anniversary_pict/main/music/Joshua%20Radin%20-%20My%20My%20Love.mp3" 
+        src="/music/Joshua Radin - My My Love.mp3" 
+      />
+      <audio 
+        ref={rainAudioRef}
+        loop 
+        src="/music/rain.mp3" 
       />
 
       <AnimatePresence>
