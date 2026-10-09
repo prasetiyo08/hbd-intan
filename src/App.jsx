@@ -1,6 +1,12 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+// --- DATA MUSIK ---
+const DATA = {
+  musicUrl: "/music/My-My-Love.mp3", // Pastikan nama file di folder public/music persis seperti ini
+  rainMusicUrl: "/music/rain.mp3"
+};
+
 // --- KOMPONEN HUJAN TETESAN AIR PLASTIK HITAM LEMBUT (OPASITAS 40%) ---
 const FloatingRain = () => {
   const raindrops = Array.from({ length: 110 }).map((_, i) => ({
@@ -194,16 +200,16 @@ function App() {
         }
       `}</style>
 
-      {/* Audio menggunakan URL Langsung dari GitHub */}
+      {/* Audio menggunakan variabel DATA */}
       <audio 
         ref={audioRef}
         loop 
-        src="https://raw.githubusercontent.com/prasetiyo08/anniversary_pict/main/music/My-My-Love.mp3" 
+        src={DATA.musicUrl} 
       />
       <audio 
         ref={rainAudioRef}
         loop 
-        src="https://raw.githubusercontent.com/prasetiyo08/anniversary_pict/main/music/rain.mp3" 
+        src={DATA.rainMusicUrl} 
       />
 
       <AnimatePresence>
