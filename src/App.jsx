@@ -1,12 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// --- DATA MUSIK ---
-const DATA = {
-  musicUrl: "/music/My-My-Love.mp3", // Pastikan nama file di folder public/music persis seperti ini
-  rainMusicUrl: "/music/rain.mp3"
-};
-
 // --- KOMPONEN HUJAN TETESAN AIR PLASTIK HITAM LEMBUT (OPASITAS 40%) ---
 const FloatingRain = () => {
   const raindrops = Array.from({ length: 110 }).map((_, i) => ({
@@ -48,14 +42,12 @@ function App() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [showRain, setShowRain] = useState(false);
   
-  // Referensi untuk musik utama dan efek hujan
   const audioRef = useRef(null);
   const rainAudioRef = useRef(null);
 
   const handleOpenLetter = () => {
     setIsTransitioning(true); 
     
-    // Mainkan musik utama
     if (audioRef.current) {
       audioRef.current.play().then(() => {
         setIsPlaying(true);
@@ -64,7 +56,6 @@ function App() {
       });
     }
 
-    // Mainkan efek suara hujan
     if (rainAudioRef.current) {
       rainAudioRef.current.play().catch((error) => {
         console.log("Rain autoplay blocked or failed:", error);
@@ -200,16 +191,16 @@ function App() {
         }
       `}</style>
 
-      {/* Audio menggunakan variabel DATA */}
+      {/* PERUBAHAN: Audio diletakkan di luar kondisi isOpen agar dimuat sejak awal */}
       <audio 
         ref={audioRef}
         loop 
-        src={DATA.musicUrl} 
+        src="/music/My-My-Love.mp3" 
       />
       <audio 
         ref={rainAudioRef}
         loop 
-        src={DATA.rainMusicUrl} 
+        src="/music/rain.mp3" 
       />
 
       <AnimatePresence>
