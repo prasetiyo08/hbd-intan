@@ -48,7 +48,9 @@ function App() {
   const handleOpenLetter = () => {
     setIsTransitioning(true); 
     
+    // Memutar musik utama
     if (audioRef.current) {
+      audioRef.current.volume = 1.0; 
       audioRef.current.play().then(() => {
         setIsPlaying(true);
       }).catch((error) => {
@@ -56,7 +58,9 @@ function App() {
       });
     }
 
+    // Memutar suara hujan dengan volume 80% (0.8)
     if (rainAudioRef.current) {
+      rainAudioRef.current.volume = 0.8;
       rainAudioRef.current.play().catch((error) => {
         console.log("Rain autoplay blocked or failed:", error);
       });
@@ -191,7 +195,7 @@ function App() {
         }
       `}</style>
 
-      {/* PERUBAHAN: Audio diletakkan di luar kondisi isOpen agar dimuat sejak awal */}
+      {/* Audio diletakkan di luar kondisi isOpen agar termuat sejak awal halaman */}
       <audio 
         ref={audioRef}
         loop 
